@@ -1,4 +1,4 @@
-function Example5_3
+function step_4body
 clear all
 global m1 m2 m3 m4 I1 I2 I3 I4 g l1 l2 l3 l4 s1 s2 s3 s4 v  chx chy u cbx cby
 m1=1;
@@ -33,7 +33,6 @@ TSPAN=[0:1E-2:12];
 X0=[s1*cos(theta1) s1*sin(theta1) theta1 l1*cos(theta1)+s2*cos(theta2) l1*sin(theta1)+s2*sin(theta2) theta2 l2*cos(theta2) l4*sin(theta4)+s3*sin(theta3) theta3 l2*cos(theta2)-s4*cos(theta4) s4*sin(theta4) theta4 0 0 0 0 0 0 0 0 0 0 0 0];
 [t,X]=ode45(@func,TSPAN,X0);
 
-%animation
 for i=1:length(X)
     figure(1);
     plot([0,0],[0,0]);
@@ -215,7 +214,6 @@ C1=[X(13)+s1*sin(X(3))*X(15)-u1;
     X(17)+(l2-s2)*cos(X(6))*X(18);
     X(22)+s2*sin(X(12))*X(24)-u2;
     X(23)-s2*cos(X(12))*X(24)];    
-    
 
 Gm=[s1*sin(X(3))*X(15)^2;
     s1*cos(X(3))*X(15)^2;
@@ -232,8 +230,6 @@ Gm=[s1*sin(X(3))*X(15)^2;
 RHS=[Q;
     Gm];
 ACC=A\RHS;
-
-
 dXdt=zeros(24,1);
 dXdt(1:12)=X(13:24);
 dXdt(13:24)=ACC(1:12);
