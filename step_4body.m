@@ -18,27 +18,28 @@ I1=m1*l1^2/12;
 I2=m2*l2^2/12;
 I3=m3*l3^2/12;
 I4=m4*l4^2/12;
-v=0.5;
-theta1=pi/3;
+v=0.25;
+theta1=pi/2;
 theta2=pi*2/3;
-theta3=pi*2/3;
+theta3=pi/2;
 theta4=pi/3;
 chx=l1*cos(theta1)+l2*cos(theta2);
 chy=l1*sin(theta1)+l2*sin(theta2);
 u=0.5;
-cbx=0;
+cbx=l2*cos(theta2)-l4*cos(theta4);
 cby=0;
 
-TSPAN=[0:1E-2:2];
-X0=[s1*cos(theta1) s1*sin(theta1) theta1 l1*cos(theta1)+s2*cos(theta2) l1*sin(theta1)+s2*sin(theta2) theta2 l4*cos(theta4)+s3*cos(theta3) l4*sin(theta4)+s3*sin(theta3) theta3 s4*cos(theta4) s4*sin(theta4) theta4 0 0 0 0 0 0 0 0 0 0 0 0];
+TSPAN=[0:1E-2:12];
+X0=[s1*cos(theta1) s1*sin(theta1) theta1 l1*cos(theta1)+s2*cos(theta2) l1*sin(theta1)+s2*sin(theta2) theta2 l2*cos(theta2) l4*sin(theta4)+s3*sin(theta3) theta3 l2*cos(theta2)-s4*cos(theta4) s4*sin(theta4) theta4 0 0 0 0 0 0 0 0 0 0 0 0];
 [t,X]=ode45(@func,TSPAN,X0);
 
+%animation
 for i=1:length(X)
     figure(1);
     plot([0,0],[0,0]);
     grid;
     axis square;
-    xmin=-3;xmax=3;ymin=-3;ymax=3;
+    xmin=-1;xmax=3;ymin=-1;ymax=3;
     axis([xmin,xmax,ymin,ymax]);
     hold on;
     xQp=X(i,1)-s1*cos(X(i,3));
@@ -72,7 +73,42 @@ xlabel('time','FontSize',18);
 ylabel('Ry','FontSize',18);
 
 function dXdt=func(t,X)
-global m1 m2 m3 m4 I1 I2 I3 I4 g l1 l2 l3 l4 s1 s2 s3 s4 v  chx chy u cbx cby
+global m1 m2 m3 m4 I1 I2 I3 I4 g l1 l2 l3 l4 s1 s2 s3 s4 v  chx chy u1 cbx1 cby1 u2 cbx2 cby2 theta1 theta2 theta3 theta4
+
+theta1=pi/2;
+theta2=pi*2/3;
+theta3=pi/2;
+theta4=pi/3;
+
+if 0<=t&&t<=4
+    u1=0;
+    u2=0.5;
+    cbx1=0;
+    cbx2=-1;
+    cby1=0;
+    cby2=0;
+elseif 4<t&&t<=8
+    u1=0.5;
+    u2=0;
+    cbx1=-2;
+    cbx2=1;
+    cby1=0;
+    cby2=0;
+elseif 8<t&&t<=12
+    u1=0;
+    u2=0.5;
+    cbx1=2;
+    cbx2=-3;
+    cby1=0;
+    cby2=0;
+elseif 12<t&&t<=16
+    u1=0.5;
+    u2=0;
+    cbx1=-4;
+    cbx2=3;
+    cby1=0;
+    cby2=0;    
+end
 M1=[m1 0 0;
     0 m1 0;
     0 0 I1];
@@ -154,8 +190,8 @@ A=[M1 zeros(3,3) zeros(3,3) zeros(3,3)   Cq1';
 
 alph=50;
 beta=50;
-C=[X(1)-s1*cos(X(3));
-    X(2)-s1*sin(X(3));
+C=[X(1)-s1*cos(X(3))-(u1*t+cbx1);
+    X(2)-s1*sin(X(3))-cby1;
     X(1)+(l1-s1)*cos(X(3))-X(4)+s2*cos(X(6));
     X(2)+(l1-s1)*sin(X(3))-X(5)+s2*sin(X(6));
     X(4)+(l2-s2)*cos(X(6))-X(7)-(l3-s3)*cos(X(9));
@@ -164,10 +200,10 @@ C=[X(1)-s1*cos(X(3));
     X(8)-s3*sin(X(9))-X(11)-(l4-s4)*sin(X(12));
     X(4)+(l2-s2)*cos(X(6))-(v*t+chx);
     X(5)+(l2-s2)*sin(X(6))-chy;
-    X(10)-s2*cos(X(12))-(u*t+cbx);
-    X(11)-s2*sin(X(12))-cby];
+    X(10)-s2*cos(X(12))-(u2*t+cbx2);
+    X(11)-s2*sin(X(12))-cby2];
     
-C1=[X(13)+s1*sin(X(3))*X(15);
+C1=[X(13)+s1*sin(X(3))*X(15)-u1;
     X(14)-s1*cos(X(3))*X(15);
     X(13)-(l1-s1)*sin(X(3))*X(15)-X(16)-s2*sin(X(6))*X(18);
     X(14)+(l1-s1)*cos(X(3))*X(15)-X(17)+s2*cos(X(6))*X(18);
@@ -177,7 +213,7 @@ C1=[X(13)+s1*sin(X(3))*X(15);
     X(20)-s3*cos(X(9))*X(21)-X(23)-(l4-s4)*cos(X(12))*X(24);
     X(16)-(l2-s2)*sin(X(6))*X(18)-v;
     X(17)+(l2-s2)*cos(X(6))*X(18);
-    X(22)+s2*sin(X(12))*X(24)-u;
+    X(22)+s2*sin(X(12))*X(24)-u2;
     X(23)-s2*cos(X(12))*X(24)];    
     
 
