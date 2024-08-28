@@ -66,10 +66,10 @@ for i=1:length(X)
     set(1,'doublebuffer','on')
 end
 
-figure(2);
-plot(t,X(:,5)+(l2-s2)*sin(X(:,6)))
-xlabel('time','FontSize',18);
-ylabel('Ry','FontSize',18);
+% figure(2);
+% plot(t,X(:,5)+(l2-s2)*sin(X(:,6)))
+% xlabel('time','FontSize',18);
+% ylabel('Ry','FontSize',18);
 
 function dXdt=func(t,X)
 global m1 m2 m3 m4 I1 I2 I3 I4 g l1 l2 l3 l4 s1 s2 s3 s4 v  chx chy u1 cbx1 cby1 u2 cbx2 cby2 theta1 theta2 theta3 theta4
